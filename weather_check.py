@@ -12,9 +12,18 @@ def rainfall_by_postcode(postcode):
 
     end = datetime.time
     start, end = get_times()
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&past_days=3&hourly=precipitation&timezone=Europe/London"
+    past_days = 7
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&past_days={past_days}&hourly=precipitation&timezone=Europe/London"
     weather = requests.get(url).json()
-    print(weather)
+    #weather["hourly"]["precipitation"][:24 + past_days*24] gets only data from current day and last (past_days)
+    rain = weather["hourly"]["precipitation"][:24 + past_days*24]
+    total_mm = 0
+    for mm in rain:
+        total_mm += mm
+    average_mm = total_mm / len(rain)
+
+    print(average_mm)
+    
     
 def get_times():
     #Get end of range (today)
